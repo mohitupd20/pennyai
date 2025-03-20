@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pennyai/screens/expenditure/expenditure.dart';
 import 'package:pennyai/screens/penny_assistant/penny_assistant.dart';
+import 'package:pennyai/screens/profile/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,105 +12,148 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7FA),
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('Penny AI'),
         backgroundColor: const Color(0xFF5E72E4),
         elevation: 0,
+        actions: [
+          CircleAvatar(
+            backgroundColor: Colors.white.withOpacity(0.9),
+            radius: 15,
+            child: const Text('👤', style: TextStyle(fontSize: 14)),
+          ),
+          const SizedBox(width: 16),
+        ],
       ),
       body: SafeArea(
-    child: SingleChildScrollView(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildBalanceCard(),
-        const SizedBox(height: 20),
-        _buildQuickActions(context), // <-- Pass context here
-        const SizedBox(height: 20),
-        _buildRecentTransactions(),
-      ],
-    ),
-    ),
-    ),
-
-    bottomNavigationBar: _buildBottomNavigationBar(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildBalanceCard(),
+              const SizedBox(height: 10),
+              _buildBudgetCard(),
+              const SizedBox(height: 10),
+              _buildRecentExpenses(),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNavigationBar(context),
     );
   }
 
   Widget _buildBalanceCard() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        color: const Color(0xFF5E72E4),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
       ),
-      child: Column(
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Total Balance',
-            style: TextStyle(color: Colors.white, fontSize: 14),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            '\$4,250.75',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Your Balance',
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  '\$4,285.75',
+                  style: TextStyle(
+                    color: Color(0xFF2DCE89),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 5),
-          const Text(
-            '+\$320 this month',
-            style: TextStyle(color: Colors.white, fontSize: 12),
-          ),
+          Container(
+            width: 30,
+            height: 30,
+            decoration: const BoxDecoration(
+              color: Color(0xFF5E72E4),
+              shape: BoxShape.circle,
+            ),
+            child: const Center(
+              child: Text('💲', style: TextStyle(fontSize: 14, color: Colors.white)),
+            ),
+          )
         ],
       ),
     );
   }
 
-  Widget _buildQuickActions(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+  Widget _buildBudgetCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Quick Actions',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildActionButton(
-                emoji: '💰',
-                label: 'Add Expense',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ExpenditureScreen(),
-                  ),
+              const Text(
+                'Monthly Budget',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                color: const Color(0xFFF0F5FF),
               ),
-              _buildActionButton(
-                emoji: '📊',
-                label: 'Budget',
-                onTap: () {},
-                color: const Color(0xFFF0F5FF),
-              ),
-              _buildActionButton(
-                emoji: '🤖',
-                label: 'Ask Penny',
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const PennyAssistantScreen()),
+              Container(
+                width: 30,
+                height: 30,
+                decoration: const BoxDecoration(
+                  color: Color(0xFF5E72E4),
+                  shape: BoxShape.circle,
                 ),
-                color: const Color(0xFFF0FFF0),
+                child: const Center(
+                  child: Text('📊', style: TextStyle(fontSize: 14, color: Colors.white)),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(height: 10),
+          // Progress bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: Stack(
+              children: [
+                Container(
+                  height: 8,
+                  width: double.infinity,
+                  color: const Color(0xFFE9ECEF),
+                ),
+                Container(
+                  height: 8,
+                  color: const Color(0xFF5E72E4),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '\$1,950 spent',
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+              ),
+              Text(
+                '\$3,000 budget',
+                style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
               ),
             ],
           ),
@@ -118,146 +162,159 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-
-  Widget _buildActionButton({
-    required String emoji,
-    required String label,
-    required VoidCallback onTap,
-    required Color color,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey.shade300),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 24)),
-            const SizedBox(height: 5),
-            Text(
-              label,
-              style: const TextStyle(fontSize: 12),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecentTransactions() {
-    final transactions = [
+  Widget _buildRecentExpenses() {
+    final expenses = [
       {
-        'icon': '🛒',
-        'title': 'Grocery Store',
-        'date': 'Today',
-        'amount': -42.30,
-      },
-      {
-        'icon': '☕',
-        'title': 'Coffee Shop',
+        'emoji': '🍔',
+        'category': 'Restaurants',
         'date': 'Yesterday',
-        'amount': -4.50,
+        'amount': -47.80,
       },
       {
-        'icon': '💵',
-        'title': 'Salary Deposit',
-        'date': 'March 15',
-        'amount': 1450.00,
+        'emoji': '🏠',
+        'category': 'Rent',
+        'date': 'Apr 1',
+        'amount': -1200.00,
+      },
+      {
+        'emoji': '🛒',
+        'category': 'Groceries',
+        'date': 'Mar 30',
+        'amount': -89.45,
       },
     ];
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Recent Transactions',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Recent Expenses',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  // Navigate to all expenses
+                },
+                child: Text(
+                  'See All →',
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
-          ...transactions.map((transaction) => _buildTransactionItem(transaction)),
+          ...expenses.map((expense) => _buildExpenseItem(expense)),
         ],
       ),
     );
   }
 
-  Widget _buildTransactionItem(Map<String, dynamic> transaction) {
-    final isExpense = transaction['amount'] < 0;
-    final formatter = NumberFormat.currency(symbol: '\$');
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(5),
-        border: Border.all(color: Colors.grey.shade200),
-      ),
-      child: Row(
-        children: [
-          Text(
-            transaction['icon'],
-            style: const TextStyle(fontSize: 18),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  transaction['title'],
-                  style: const TextStyle(fontSize: 14),
+  Widget _buildExpenseItem(Map<String, dynamic> expense) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F7FA),
+                  shape: BoxShape.circle,
                 ),
-                Text(
-                  transaction['date'],
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                child: Center(
+                  child: Text(expense['emoji'], style: const TextStyle(fontSize: 14)),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      expense['category'],
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      expense['date'],
+                      style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
+                    ),
+                  ],
+                ),
+              ),
+              Text(
+                '${expense['amount'].toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-          Text(
-            formatter.format(transaction['amount'].abs()),
-            style: TextStyle(
-              fontSize: 14,
-              color: isExpense ? Colors.red : Colors.green,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
+        ),
+        // if (expense != expenses.last)
+        //   const Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
+      ],
     );
   }
 
-  Widget _buildBottomNavigationBar() {
+  Widget _buildBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: 0,
+      onTap: (index) {
+        if (index == 1) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ExpenditureScreen()),
+          );
+        } else if (index == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PennyAssistantScreen()),
+          );
+        } else if (index == 3) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
+        }
+      },
+      type: BottomNavigationBarType.fixed,
       items: const [
         BottomNavigationBarItem(
-          icon: Text('🏠', style: TextStyle(fontSize: 16)),
+          icon: Text('🏠', style: TextStyle(fontSize: 18)),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Text('📊', style: TextStyle(fontSize: 16)),
-          label: 'Stats',
+          icon: Text('💰', style: TextStyle(fontSize: 18)),
+          label: 'Expense',
         ),
         BottomNavigationBarItem(
-          icon: Text('👤', style: TextStyle(fontSize: 16)),
+          icon: Text('🤖', style: TextStyle(fontSize: 18)),
+          label: 'Penny',
+        ),
+        BottomNavigationBarItem(
+          icon: Text('👤', style: TextStyle(fontSize: 18)),
           label: 'Profile',
         ),
       ],
       selectedItemColor: const Color(0xFF5E72E4),
-      unselectedItemColor: Colors.grey,
+      unselectedItemColor: Colors.grey.shade600,
     );
   }
 }
